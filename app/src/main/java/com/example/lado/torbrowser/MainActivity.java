@@ -110,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
-        webView.setWebChromeClient(new MyChromeClients());
     }
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -155,68 +154,6 @@ public class MainActivity extends AppCompatActivity {
             if (progressBar.isShowing()) {
                 progressBar.dismiss();
             }
-        }
-    }
-
-    private class MyChromeClients extends WebChromeClient implements MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener {
-
-        FrameLayout.LayoutParams COVER_SCREEN_GRAVITY_CENTER = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
-
-        @SuppressLint("ResourceType")
-        @Override
-        public void onShowCustomView(View view, CustomViewCallback callback) {
-            if (view instanceof FrameLayout) {
-
-                // mainWebView is the view that the video should've played inside.
-                webView = (WebView) findViewById(R.id.webView);
-
-                mCustomViewContainer = (FrameLayout) view;
-                mCustomViewCallback = callback;
-
-                // mainLayout is the root layout that (ex. the layout that contains the webview)
-                mContentView = (RelativeLayout) findViewById(R.layout.activity_main);
-                if (mCustomViewContainer.getFocusedChild() instanceof VideoView) {
-                    mVideoView = (VideoView) mCustomViewContainer.getFocusedChild();
-                    // frame.removeView(video);
-                    mContentView.setVisibility(View.GONE);
-                    mCustomViewContainer.setVisibility(View.VISIBLE);
-                    setContentView(mCustomViewContainer);
-                    mVideoView.setOnCompletionListener(this);
-                    mVideoView.setOnErrorListener(this);
-                    mVideoView.start();
-
-                }
-            }
-        }
-
-        public void onHideCustomView() {
-            if (mVideoView == null) {
-                return;
-            } else {
-                // Hide the custom view.
-                mVideoView.setVisibility(View.GONE);
-                // Remove the custom view from its container.
-                mCustomViewContainer.removeView(mVideoView);
-                mVideoView = null;
-                mCustomViewContainer.setVisibility(View.GONE);
-                mCustomViewCallback.onCustomViewHidden();
-                // Show the content view.
-                mContentView.setVisibility(View.VISIBLE);
-            }
-        }
-
-        public void onCompletion(MediaPlayer mp) {
-            mp.stop();
-            mCustomViewContainer.setVisibility(View.GONE);
-            onHideCustomView();
-            setContentView(mContentView);
-        }
-
-        public boolean onError(MediaPlayer arg0, int arg1, int arg2) {
-            setContentView(mContentView);
-            return true;
         }
     }
 
